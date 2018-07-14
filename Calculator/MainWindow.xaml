@@ -1,0 +1,185 @@
+﻿<Window x:Class="Calculator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Calculator"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:system1="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
+        mc:Ignorable="d"
+        Title="Simple Calculator" Height="565" Width="530" WindowStyle="None" AllowsTransparency="True"
+        KeyDown="Window_KeyDown"
+        Name="Window">
+
+    <Window.Resources>
+
+        <system1:Brush x:Key="BackgroundColor">#FF20242A</system1:Brush>
+
+        <!--어두운 버튼 템플릿-->
+        <Style x:Key="NomalButton" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+
+                        <Grid>
+                            <Rectangle Fill="#FF20242A" RenderTransformOrigin="0.5,0.525" x:Name="BackGroundRectangle"/>
+                            <TextBlock Text="{TemplateBinding Property=Content}" Foreground="White" FontSize="{TemplateBinding FontSize}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Width="Auto" RenderTransformOrigin="0.51,0.568" FontFamily="{TemplateBinding FontFamily}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Fill" TargetName="BackGroundRectangle" Value="#FF303E51"/>
+                            </Trigger>
+
+                            <!--클릭했을때 윤곽선 생성, 색 변경-->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="BackGroundRectangle" Property="Fill" Value="#141414"/>
+                                <Setter TargetName="BackGroundRectangle" Property="Stroke" Value="#FF3D4249"/>
+                                <Setter Property="Opacity" TargetName="BackGroundRectangle" Value="0.5"/>
+                            </Trigger>
+
+                            <!--마우스 올라갔을때 색 변경-->
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+            </Setter>
+            <Setter Property="FontFamily" Value="Arial Unicode MS"/>
+        </Style>
+        <Style x:Key="ControlStyle1" TargetType="{x:Type Control}"/>
+
+    </Window.Resources>
+
+    <Border Background="#FF20242A">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="33"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <!--상단바-->
+            <Grid Grid.Row="0" Grid.ColumnSpan="2" MouseDown="TiteBar_MouseDown">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="447"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column ="0" Background="#00000000">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Calculator Icon Inverted.png" DockPanel.Dock="Left" 
+                               Margin="6,6,0,3" Width="25"/>
+                        <TextBlock 
+                            Text="Simple Caculator" VerticalAlignment="Center"
+                            HorizontalAlignment="Right" Margin="6,2,0,0" 
+                            FontSize="14" Width="149.513" 
+                            Foreground="#FFC1C1C1" FontFamily="Microsoft YaHei UI"/>
+                    </StackPanel>
+                    <Rectangle/>
+                </Grid>
+                <!--DragMove Handler(투명 사각형)-->
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <!--최소화 버튼 템플릿-->
+                    <Button Content="_" Width="40" Margin="0,0,0,0"  FontSize="24" Click="Minimize_click" >
+                        <Button.Template>
+                            <ControlTemplate TargetType="{x:Type Button}">
+
+                                <Grid>
+                                    <Rectangle Fill="#FF20242A" RenderTransformOrigin="0.5,0.525" x:Name="BackGroundRectangle"/>
+                                    <TextBlock Text="{TemplateBinding Property=Content}" Foreground="White" FontSize="{TemplateBinding FontSize}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,5" Width="Auto" RenderTransformOrigin="0.51,0.568" FontFamily="KBIZgo H"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Fill" TargetName="BackGroundRectangle" Value="#FF303E51"/>
+                                    </Trigger>
+
+                                    <!--클릭했을때 윤곽선 생성, 색 변경-->
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="BackGroundRectangle" Property="Fill" Value="#141414"/>
+                                        <Setter TargetName="BackGroundRectangle" Property="Stroke" Value="#FF3D4249"/>
+                                        <Setter Property="Opacity" TargetName="BackGroundRectangle" Value="0.5"/>
+                                    </Trigger>
+
+                                    <!--마우스 올라갔을때 색 변경-->
+                                </ControlTemplate.Triggers>
+
+
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button Content="X" Width="40" Style="{StaticResource NomalButton}" FontSize="22" Click="Close_Click" />
+                </StackPanel>
+            </Grid>
+
+            <!--메인 레이아웃-->
+            <Grid Grid.Row="1">
+                <DockPanel>
+                    
+                    <StackPanel DockPanel.Dock="Top">
+
+                        <!--서브 디스플레이-->
+                        <TextBlock Text="{Binding SubDisplayText}" Height="30" Margin="10,10,15,0" TextAlignment="Right" Foreground="#FFE2E2E2" FontSize="20" >
+                        
+                            
+                            
+                        </TextBlock>
+
+                        <!--메인 디스프레이-->
+                        <Grid Height="80" Margin="10,5,10,0" >
+                            <Rectangle StrokeThickness="1" Stroke="#FF536074" Fill="#FF414E61"/>
+                            <TextBlock Text="{Binding DisplayText}" Margin="10,6.156,10,10" FontSize="48" FontFamily="Segoe UI" FontWeight="Bold" TextAlignment="Right" Foreground="White" RenderTransformOrigin="0.501,0.551" VerticalAlignment="Center" Name="Display"/>
+                        </Grid>
+                    </StackPanel>
+
+
+                    <!--Button-->
+                    <Grid Margin="10,15,10,10" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Content="Del" Name="Del" Grid.Column="0" Grid.Row="0" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickDelButton"/>
+                        <Button Content="CE" Grid.Column="1" Grid.Row="0" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickCEButton"/>
+                        <Button Content="C" Name="c" Grid.Column="2" Grid.Row="0" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickCButton"/>
+                        <Button Content="/" Name="Div"  Grid.Column="3" Grid.Row="0" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnOperatorButtonClick"/>
+
+                        <Button Content="7" Name="num7" Grid.Column="0" Grid.Row="1" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickNumButton"/>
+                        <Button Content="8" Name="num8" Grid.Column="1" Grid.Row="1" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickNumButton"/>
+                        <Button Content="9" Name="num9" Grid.Column="2" Grid.Row="1" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickNumButton"/>
+                        <Button Content="*" Name="Multi" Grid.Column="3" Grid.Row="1" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnOperatorButtonClick"/>
+
+                        <Button Content="4" Name="num4" Grid.Column="0" Grid.Row="2" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickNumButton"/>
+                        <Button Content="5" Name="num5" Grid.Column="1" Grid.Row="2" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickNumButton"/>
+                        <Button Content="6" Name="num6" Grid.Column="2" Grid.Row="2" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickNumButton"/>
+                        <Button Content="-" Name="Sub" Grid.Column="3" Grid.Row="2" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnOperatorButtonClick" Height="77" VerticalAlignment="Top"/>
+
+                        <Button Content="1" Name="num1" Grid.Column="0" Grid.Row="3" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickNumButton"/>
+                        <Button Content="2" Name="num2" Grid.Column="1" Grid.Row="3" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickNumButton"/>
+                        <Button Content="3" Name="num3" Grid.Column="2" Grid.Row="3" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickNumButton"/>
+                        <Button Content="+" Name="Add" Grid.Column="3" Grid.Row="3" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnOperatorButtonClick"/>
+
+                        <Button Content="0" Name="num0"  Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickNumButton"/>
+                        <Button Content="." Name="point"  Grid.Column="2" Grid.Row="4" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickNumButton"/>
+                        <Button Content="=" Name="equl"  Grid.Column="3" Grid.Row="4" Style="{StaticResource NomalButton}" FontFamily="Segoe UI" FontSize="36" Click="OnClickEqulButton"/>
+                    </Grid>
+
+                </DockPanel>
+            </Grid>
+        </Grid>
+
+    </Border>
+
+</Window>
