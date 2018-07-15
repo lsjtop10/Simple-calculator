@@ -48,6 +48,19 @@
             <Setter Property="FontFamily" Value="Arial Unicode MS"/>
         </Style>
         <Style x:Key="ControlStyle1" TargetType="{x:Type Control}"/>
+        
+        <Storyboard x:Key="FadeIn" x:Name="FadeIn">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="textBlock">
+                <EasingColorKeyFrame KeyTime="0" Value="#00E2E2E2"/>
+                <EasingColorKeyFrame KeyTime="0:0:0.3" Value="#FFE2E2E2"/>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="FadeOut" x:Name="FadeOut">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(SolidColorBrush.Color)" Storyboard.TargetName="textBlock">
+                <EasingColorKeyFrame KeyTime="0" Value="#FFE2E2E2"/>
+                <EasingColorKeyFrame KeyTime="0:0:0.3" Value="#00E2E2E2"/>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
 
     </Window.Resources>
 
@@ -117,20 +130,16 @@
             <!--메인 레이아웃-->
             <Grid Grid.Row="1">
                 <DockPanel>
-                    
+
                     <StackPanel DockPanel.Dock="Top">
 
                         <!--서브 디스플레이-->
-                        <TextBlock Text="{Binding SubDisplayText}" Height="30" Margin="10,10,15,0" TextAlignment="Right" Foreground="#FFE2E2E2" FontSize="20" >
-                        
-                            
-                            
-                        </TextBlock>
+                        <TextBlock x:Name="textBlock" Text="{Binding SubDisplayText}" Height="30" Margin="10,10,15,0" TextAlignment="Right" Foreground="#FFE2E2E2" FontSize="20" />
 
                         <!--메인 디스프레이-->
                         <Grid Height="80" Margin="10,5,10,0" >
                             <Rectangle StrokeThickness="1" Stroke="#FF536074" Fill="#FF414E61"/>
-                            <TextBlock Text="{Binding DisplayText}" Margin="10,6.156,10,10" FontSize="48" FontFamily="Segoe UI" FontWeight="Bold" TextAlignment="Right" Foreground="White" RenderTransformOrigin="0.501,0.551" VerticalAlignment="Center" Name="Display"/>
+                            <TextBlock Text="{Binding DisplayText}" Margin="10,6.156,10,10" FontSize="48" FontFamily="Segoe UI" FontWeight="Bold" TextAlignment="Right" Foreground="White" RenderTransformOrigin="0.501,0.551" VerticalAlignment="Center" x:Name="Display"/>
                         </Grid>
                     </StackPanel>
 

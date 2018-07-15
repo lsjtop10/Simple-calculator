@@ -24,10 +24,10 @@ namespace Calculator
         //계산기의 텍스트 바인딩
         public static DataSet ViewModel = new DataSet();
 
-        private double Source;
-        private double Target;
+        private double Source = 0;
+        private double Target = 0;
 
-        private bool CurrentDispaiedValIsGarbage = false;
+      
 
         Operation CurrentOperation = Operation.None;
 
@@ -54,11 +54,6 @@ namespace Calculator
 
         private void OnClickNumButton(object sender, RoutedEventArgs e)
         {
-            if(CurrentOperation != Operation.None && CurrentDispaiedValIsGarbage)
-            {
-                ViewModel.DisplayText = "";
-                CurrentDispaiedValIsGarbage = false;
-            }
 
             if(ViewModel.DisplayText.Length < 17)
             {
@@ -70,7 +65,12 @@ namespace Calculator
 
         private void OnClickEqulButton(object sender, RoutedEventArgs e)
         {
-            Target = double.Parse(ViewModel.DisplayText);
+            bool success = double.TryParse(ViewModel.DisplayText , out Target);
+            if(!success)
+            {
+                MessageBox.Show("잘못된 값 입니다.");
+                return;
+            }
 
             double resultVal = 0;
 
@@ -127,14 +127,52 @@ namespace Calculator
             try
             {
                 if (OperationButton == Add)
-                {
-                    CurrentOperation = Operation.Add;
-                    Source = double.Parse(ViewModel.DisplayText);
-                    ViewModel.SubDisplayText = ViewModel.DisplayText + " +";
-                    CurrentDispaiedValIsGarbage = true;
+                { 
+                    //이미 서브 디스플레이에 어떤 식이 입력되어 있는 경우라면
+                    if(ViewModel.SubDisplayText != "" )
+                    {
+                        double val = double.Parse(ViewModel.DisplayText);
+
+                        //식에 따를 적절한 처리를 한 다음
+                        if(CurrentOperation == Operation.Add)
+                        {
+                            Source = Source + val;
+                        }
+                        else if(CurrentOperation == Operation.Sub)
+                        {
+                            Source = Source + val;
+                        }
+                        else if(CurrentOperation == Operation.Multi)
+                        {
+                            Source = Source * val;
+                        }
+                        else if(CurrentOperation == Operation.Div)
+                        {
+                            Source = Source / val;
+                        }
+
+                        //현재 연산을 덧셈으로 한 다음 리턴
+                        CurrentOperation = Operation.Add;
+                        ViewModel.SubDisplayText = Source.ToString() + " +";
+                        ViewModel.DisplayText = "";
+
+                    }
+                    else //아니면
+                    {
+                        //현재 시행중인 연산을 덧셈으로 한 다음
+                        CurrentOperation = Operation.Add;
+                        //전항에 메인 디스플레이에 표시된 값 파싱해서 넣고
+                        Source = double.Parse(ViewModel.DisplayText);
+                        //서브 디스플레이에는 메인 디스플레이에 표시된 값과 " +"를 결합한다.
+                        ViewModel.SubDisplayText = ViewModel.DisplayText + " +";
+                        ViewModel.DisplayText = "";
+
+                    }
+
                 }
                 else if (OperationButton == Sub)
                 {
+                    //파싱된 값
                     double val;
                     bool success = double.TryParse(ViewModel.DisplayText, out val);
                     
@@ -144,26 +182,118 @@ namespace Calculator
                         return;
                     }
 
-                    CurrentOperation = Operation.Sub;
-                    Source = val;
-                    ViewModel.SubDisplayText = ViewModel.DisplayText + " -";
-                    CurrentDispaiedValIsGarbage = true;
+                    if (ViewModel.SubDisplayText != "")
+                    {
+
+                        if (CurrentOperation == Operation.Add)
+                        {
+                            Source = Source + val;
+                        }
+                        else if (CurrentOperation == Operation.Sub)
+                        {
+                            Source = Source + val;
+                        }
+                        else if (CurrentOperation == Operation.Multi)
+                        {
+                            Source = Source * val;
+                        }
+                        else if (CurrentOperation == Operation.Div)
+                        {
+                            Source = Source / val;
+                        }
+
+                        CurrentOperation = Operation.Sub;
+                        ViewModel.SubDisplayText = Source.ToString() + " -";
+                        ViewModel.DisplayText = "";
+                    }
+                    else
+                    {
+                        //상세는 위의 덧셈의 경우와 동일
+                        CurrentOperation = Operation.Sub;
+                        Source = val;
+                        ViewModel.SubDisplayText = ViewModel.DisplayText + " -";
+                        ViewModel.DisplayText = "";
+
+                    }
 
                 }
                 else if (OperationButton == Multi)
                 {
-                    CurrentOperation = Operation.Multi;
-                    Source = double.Parse(ViewModel.DisplayText);
-                    ViewModel.SubDisplayText = ViewModel.DisplayText + " *";
-                    CurrentDispaiedValIsGarbage = true;
+                    if (ViewModel.SubDisplayText != "")
+                    {
+                        double val = double.Parse(ViewModel.DisplayText);
+
+                        //식에 따를 적절한 처리를 한 다음
+                        if (CurrentOperation == Operation.Add)
+                        {
+                            Source = Source + val;
+                        }
+                        else if (CurrentOperation == Operation.Sub)
+                        {
+                            Source = Source + val;
+                        }
+                        else if (CurrentOperation == Operation.Multi)
+                        {
+                            Source = Source * val;
+                        }
+                        else if (CurrentOperation == Operation.Div)
+                        {
+                            Source = Source / val;
+                        }
+
+                        //현재 연산을 덧셈으로 한 다음 리턴
+                        CurrentOperation = Operation.Multi;
+                        ViewModel.SubDisplayText = Source.ToString() + " *";
+                        ViewModel.DisplayText = "";
+
+                    }
+                    else
+                    {
+                        CurrentOperation = Operation.Multi;
+                        Source = double.Parse(ViewModel.DisplayText);
+                        ViewModel.SubDisplayText = ViewModel.DisplayText + " *";
+                        ViewModel.DisplayText = "";
+                    }
 
                 }
                 else if (OperationButton == Div)
                 {
-                    CurrentOperation = Operation.Div;
-                    Source = double.Parse(ViewModel.DisplayText);
-                    ViewModel.SubDisplayText = ViewModel.DisplayText + " /";
-                    CurrentDispaiedValIsGarbage = true;
+
+                    if (ViewModel.SubDisplayText != "")
+                    {
+                        double val = double.Parse(ViewModel.DisplayText);
+
+                        //식에 따를 적절한 처리를 한 다음
+                        if (CurrentOperation == Operation.Add)
+                        {
+                            Source = Source + val;
+                        }
+                        else if (CurrentOperation == Operation.Sub)
+                        {
+                            Source = Source + val;
+                        }
+                        else if (CurrentOperation == Operation.Multi)
+                        {
+                            Source = Source * val;
+                        }
+                        else if (CurrentOperation == Operation.Div)
+                        {
+                            Source = Source / val;
+                        }
+
+                        //현재 연산을 덧셈으로 한 다음 리턴
+                        CurrentOperation = Operation.Div;
+                        ViewModel.SubDisplayText = Source.ToString() + " /";
+                        ViewModel.DisplayText = "";
+
+                    }
+                    else
+                    {
+                        CurrentOperation = Operation.Div;
+                        Source = double.Parse(ViewModel.DisplayText);
+                        ViewModel.SubDisplayText = ViewModel.DisplayText + " /";
+                        ViewModel.DisplayText = "";
+                    }
 
                 }
             }
